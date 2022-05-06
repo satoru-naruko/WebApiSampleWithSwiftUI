@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+struct OkashiItem: Identifiable {
+    let id = UUID()
+    let name: String
+    let link: URL
+    let image: UIImage
+}
+
 struct ContentView: View {
     
     @ObservedObject var okashiDataList = OkashiData()
@@ -18,6 +25,12 @@ struct ContentView: View {
             TextField("キーワードを入力してください", text: $inputText, onCommit: {
                 okashiDataList.searchOkashi(keyword: inputText)
             })
+            
+            List(okashiDataList.okashiList) { okashi in
+                HStack {
+                    Text(okashi.name)
+                }
+            }
             
         }
     }

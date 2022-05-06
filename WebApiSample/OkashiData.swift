@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 class OkashiData: ObservableObject {
     
@@ -20,6 +21,8 @@ class OkashiData: ObservableObject {
         let item: [Item]?
     }
     
+    @Published var okashiList: [OkashiItem] = [ ]
+    
     func searchOkashi(keyword: String){
         print(keyword)
         
@@ -31,7 +34,7 @@ class OkashiData: ObservableObject {
         else {
             return
         }
-        print(req_url)
+//      print(req_url)
         
         let req = URLRequest(url: req_url)
         let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
@@ -43,7 +46,26 @@ class OkashiData: ObservableObject {
                 let decoder = JSONDecoder()
                 let json = try decoder.decode(ResultJson.self, from: data!)
                 
-                print(json)
+                if let items = json.item {
+                    
+                    self.okashiList.removeAll()
+                    
+                    for item in items {
+                        if let name = item.name ,
+                           let link = item.url
+//                           let imageUrl = item.imageUrl
+//                           let imageData = try? Data(contentsOf: imageUrl)
+//                           let image = UIImage(data: imageData)?.withRenderingMode(.alwaysOriginal)
+                        {
+                           
+                            let okashi = OkashiItem(name: name, link: link, image: UIImage())
+                            self.okashiList.append(okashi)
+                        }
+                    }
+//                    print(self.okashiList)
+                }
+                
+//                print(json)
             } catch{
                 print("josn decode error.")
             }
